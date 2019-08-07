@@ -1,0 +1,23 @@
+version: '2'
+services:
+  elasticsearch:
+    container_name: es
+    build: ./elasticsearch
+    expose:
+      - 9200
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    tty: true
+    environment:
+      discovery.type: single-node
+
+  kibana:
+    container_name: kibana
+    build: ./kibana
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
