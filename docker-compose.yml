@@ -1,8 +1,8 @@
 version: '2'
 services:
   elasticsearch:
-    container_name: es
-    build: ./elasticsearch
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
     expose:
       - 9200
     ports:
@@ -16,10 +16,20 @@ services:
 
   kibana:
     container_name: kibana
-    build: ./kibana
+    image: docker.elastic.co/kibana/kibana:7.3.0
     ports:
       - "5601:5601"
     depends_on:
       - elasticsearch
     environment:
-      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_URL: http://localhost:9200
+
+  apm-server:
+    container_name: apm-server
+    image: docker.elastic.co/apm/apm-server:7.3.0
+    volumes:
+      - ./apm-server.docker.yml:/usr/share/apm-server/apm-server.yml:ro
+    depends_on:
+      - elasticsearch
+    ports:
+      - "8200:8200"
